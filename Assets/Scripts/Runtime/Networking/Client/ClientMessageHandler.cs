@@ -20,8 +20,8 @@ namespace CardGame
         private static void HandleGameStart(string json)
         {
             var msg = JsonUtility.FromJson<GameStartMessage>(json);
-            Debug.Log("GameStarted");
-            Debug.Log($"Action: {msg.action}, Player: {msg.playerIds[0]}");
+            GameEvents.GameStart(msg);
+            Debug.Log($"Action: {msg.action}");
         }
     }
 }

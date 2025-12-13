@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 514f4ad05ea524e4798dcfe2fd0df68b, type: 3}
+  m_Name: CurveParameters
+  m_EditorClassIdentifier: 
+  positioning:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 3.6071427
+      outSlope: 3.6071427
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.06666667
+    - serializedVersion: 3
+      time: 0.5
+      value: 1
+      inSlope: 0.042857412
+      outSlope: 0.042857412
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.22222221
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -3.1285717
+      outSlope: -3.1285717
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.111111104
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  positioningInfluence: 0.075
+  rotation:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: -1
+      inSlope: 3.0462508
+      outSlope: 3.0462508
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.3313401
+      value: 0.009344995
+      inSlope: -0.032629013
+      outSlope: -0.032629013
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.62122124
+      outWeight: 0.32620844
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1.4815528
+      outSlope: 1.4815528
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  rotationInfluence: -5

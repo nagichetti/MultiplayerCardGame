@@ -1,3 +1,4 @@
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -7,21 +8,43 @@ namespace CardGame
     {
         [SerializeField]
         private GameData GameData;
-
+        [SerializeField]
+        private NetworkPlayer m_networkPrefab;
+        [SerializeField]
+        private GameObject m_mainMenu;
+        [SerializeField]
+        private GameObject m_game;
         private void Awake()
         {
             GameEvents.OnPlayerJoined += GameEvents_OnPlayerJoined;
             GameEvents.OnPlayerQuit += GameEvents_OnPlayerQuit;
+            GameEvents.OnGameStart += GameEvents_OnGameStart;
         }
+
         private void OnDestroy()
         {
             GameData.ResetData();
             GameEvents.OnPlayerJoined -= GameEvents_OnPlayerJoined;
             GameEvents.OnPlayerQuit -= GameEvents_OnPlayerQuit;
+            GameEvents.OnGameStart -= GameEvents_OnGameStart;
         }
 
-        private void GameEvents_OnPlayerJoined(string obj)
+        private void GameEvents_OnGameStart(GameStartMessage obj)
         {
+            m_game.SetActive(true);
+            m_mainMenu.SetActive(false);
+
+            if (GameData.PlayerIds.Count == 0)
+                GameData.PlayerIds = obj.playerIds.ToList();
+
+            GameData.Totalturns = obj.totalTurns;
+        }
+
+        private void GameEvents_OnPlayerJoined(string obj, ulong clienId)
+        {
+            NetworkPlayer player = Instantiate(m_networkPrefab);
+            player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clienId);
+
             GameData.PlayersJoined++;
             GameData.PlayerIds.Add(obj);
 

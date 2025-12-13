@@ -19,7 +19,7 @@ namespace CardGame
 
             Debug.Log($"Client {clientId} assigned {playerId}");
 
-            GameEvents.PlayerJoined(playerId);
+            GameEvents.PlayerJoined(playerId, clientId);
         }
 
         //When Player joins remove it from the dictionary
