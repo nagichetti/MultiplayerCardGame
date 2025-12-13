@@ -1,0 +1,19 @@
+{
+    "name": "Nagi.Test.CardGame",
+    "rootNamespace": "CardGame",
+    "references": [
+        "GUID:3450dc9e228065a499e6e09dee931704",
+        "GUID:2406edb708fb4de7b412856af92595c9",
+        "GUID:1491147abca9d7d4bb7105af628b223e",
+        "GUID:0d0243c226d5dab4fb5d34006a1ad53b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

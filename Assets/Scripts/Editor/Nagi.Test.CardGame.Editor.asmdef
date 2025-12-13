@@ -1,0 +1,18 @@
+{
+    "name": "Nagi.Test.CardGame.Editor",
+    "rootNamespace": "CardGame.Editor",
+    "references": [
+        "GUID:a0089ea2189615f42a32c335c6979fe2"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
