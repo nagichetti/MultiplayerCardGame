@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 namespace CardGame
@@ -9,14 +10,24 @@ namespace CardGame
         [SerializeField]
         private LanListener lanListener;
 
+        public const Int32 Port = 7777;
+        private bool broadCastSpawned, lanListenerSpawned;
         public void StartServer()
         {
+            if (!broadCastSpawned)
+            {
+                Instantiate(lanBroadcaster.gameObject);
+                broadCastSpawned = true;
+            }
             NetworkManager.Singleton.StartHost();
-            Instantiate(lanBroadcaster.gameObject);
         }
         public void StartCilent()
         {
-            Instantiate(lanListener.gameObject);
+            if (!lanListenerSpawned)
+            {
+                Instantiate(lanListener.gameObject);
+                lanListenerSpawned = true;
+            }
         }
     }
 }

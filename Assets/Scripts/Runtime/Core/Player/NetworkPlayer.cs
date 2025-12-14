@@ -16,5 +16,14 @@ namespace CardGame
             else
                 OnSpawnRemotePlayer?.Invoke(this);
         }
+
+        [ServerRpc]
+        public void SendToServerServerRpc(string json, ServerRpcParams rpcParams = default)
+        {
+            NetworkMessageRouter.Instance.ProcessFromClientRpc(
+                json,
+                rpcParams.Receive.SenderClientId
+            );
+        }
     }
 }

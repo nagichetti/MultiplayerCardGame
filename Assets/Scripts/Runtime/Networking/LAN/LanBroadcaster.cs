@@ -16,7 +16,7 @@ namespace CardGame
         {
             udp = new UdpClient();
             udp.EnableBroadcast = true;
-            endPoint = new IPEndPoint(IPAddress.Broadcast, 7777);
+            endPoint = new IPEndPoint(IPAddress.Broadcast, GameNetworkManager.Port);
         }
         private void Update()
         {

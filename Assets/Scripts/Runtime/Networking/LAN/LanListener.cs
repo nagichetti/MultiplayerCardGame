@@ -17,7 +17,7 @@ namespace CardGame
 
         private void Start()
         {
-            udp = new UdpClient(7777);
+            udp = new UdpClient(GameNetworkManager.Port);
             udp.BeginReceive(OnReceive, null);
             StartCoroutine(WaitForIP());
         }
@@ -26,7 +26,7 @@ namespace CardGame
         {
             if (isConnected) return;
 
-            IPEndPoint ep = new IPEndPoint(IPAddress.Any, 7777);
+            IPEndPoint ep = new IPEndPoint(IPAddress.Any, GameNetworkManager.Port);
             byte[] data = udp.EndReceive(result, ref ep);
             string msg = Encoding.UTF8.GetString(data);
 
@@ -48,7 +48,7 @@ namespace CardGame
             Debug.Log($"Trying to connect: {address}");
             UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
             transport.ConnectionData.Address = address;
-            transport.ConnectionData.Port = 7777;
+            transport.ConnectionData.Port = GameNetworkManager.Port;
 
             NetworkManager.Singleton.StartClient();
         }

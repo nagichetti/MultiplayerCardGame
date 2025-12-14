@@ -9,35 +9,50 @@ namespace CardGame
         private List<Card> cards = new();
         [SerializeField]
         private GameObject m_cardSlot;
-        [SerializeField]
-        private Card m_card;
 
-        private Card selectedCard;
+        private CardVisual selectedCard;
 
-        private void Start()
+        private void Awake()
         {
-            for (int i = 0; i < 6; i++)
-            {
-                AddCard(m_card);
-            }
+            CardEvents.OnSpawnCardToHand += SpawnCard;
+            CardEvents.OnAddCardToHand += AddCard;
+            CardEvents.OnRemoveCardFromHand += RemoveCard;
         }
 
-        public void AddCard(Card spawncard)
+        private void OnDestroy()
+        {
+            CardEvents.OnSpawnCardToHand -= SpawnCard;
+            CardEvents.OnAddCardToHand -= AddCard;
+            CardEvents.OnRemoveCardFromHand -= RemoveCard;
+        }
+
+        public void SpawnCard(Card spawncard)
         {
             var cardSlot = Instantiate(m_cardSlot, transform);
             Card card = Instantiate(spawncard, cardSlot.transform);
-            card.BeginDragEvent.AddListener(BeginDrag);
-            card.EndDragEvent.AddListener(DragEnded);
-            cards.Add(card);
-        }
+            card.CardVisual.BeginDragEvent.AddListener(BeginDrag);
+            card.CardVisual.EndDragEvent.AddListener(DragEnded);
+            card.Init();
+            CardEvents.AddCardToHand(card);
 
-        private void BeginDrag(Card card)
+        }
+        private void AddCard(Card card)
+        {
+            if (!cards.Contains(card))
+                cards.Add(card);
+        }
+        private void RemoveCard(Card card)
+        {
+            if (cards.Contains(card))
+                cards.Remove(card);
+        }
+        private void BeginDrag(CardVisual card)
         {
             if (selectedCard == null)
                 selectedCard = card;
         }
 
-        private void DragEnded(Card card)
+        private void DragEnded(CardVisual card)
         {
             if (selectedCard == null) return;
 

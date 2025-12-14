@@ -14,8 +14,9 @@ namespace CardGame
         private GameObject m_mainMenu;
         [SerializeField]
         private GameObject m_game;
-        private void Awake()
+        public override void Awake()
         {
+            base.Awake();
             GameEvents.OnPlayerJoined += GameEvents_OnPlayerJoined;
             GameEvents.OnPlayerQuit += GameEvents_OnPlayerQuit;
             GameEvents.OnGameStart += GameEvents_OnGameStart;
@@ -31,6 +32,8 @@ namespace CardGame
 
         private void GameEvents_OnGameStart(GameStartMessage obj)
         {
+            if (obj == null) return;
+
             m_game.SetActive(true);
             m_mainMenu.SetActive(false);
 
@@ -40,13 +43,13 @@ namespace CardGame
             GameData.Totalturns = obj.totalTurns;
         }
 
-        private void GameEvents_OnPlayerJoined(string obj, ulong clienId)
+        private void GameEvents_OnPlayerJoined(PlayerSlot obj, ulong clienId)
         {
             NetworkPlayer player = Instantiate(m_networkPrefab);
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clienId);
 
             GameData.PlayersJoined++;
-            GameData.PlayerIds.Add(obj);
+            GameData.PlayerIds.Add(obj.ToString());
 
             if (GameData.PlayersJoined == GameData.PlayersNeeded)
                 StartMatch();
@@ -63,12 +66,13 @@ namespace CardGame
         {
             var msg = new GameStartMessage
             {
-                action = "gameStart",
+                action = nameof(Actions.gameStart),
                 playerIds = GameData.PlayerIds.ToArray(),
                 totalTurns = GameData.Totalturns
             };
+            Debug.Log("Sending"+msg.action);
 
-            ServerSession.Broadcast(msg);
+            JsonNetworkClient.SendToClients(msg);
         }
     }
 }

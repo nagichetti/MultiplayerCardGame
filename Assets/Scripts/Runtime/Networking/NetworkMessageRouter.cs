@@ -1,6 +1,5 @@
 using System;
 using Unity.Netcode;
-using UnityEngine;
 
 namespace CardGame
 {
@@ -25,6 +24,7 @@ namespace CardGame
                 NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
                 NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
             }
+
         }
         //Register from the serversession
         private void OnClientConnectedCallback(ulong obj)
@@ -36,17 +36,33 @@ namespace CardGame
         {
             ServerSession.UnregisterPlayer(obj);
         }
+
+        #region Communication
         //Sending msgs to server
         [ServerRpc(InvokePermission = RpcInvokePermission.Everyone)]
-        public void SendToServersServerRpc(string json)
+        public void SendToServerRpc(string json)
         {
             ServerMessageHandler.Process(json, OwnerClientId);
         }
+        [ClientRpc]
+        public void ProcessFromClientRpc(string json, ulong senderClientId)
+        {
+            ServerMessageHandler.Process(json, senderClientId);
+        }
+
         //Sending msgs to client
         [ClientRpc]
         public void SendToClientClientRpc(string json)
         {
             ClientMessageHandler.Process(json);
         }
+        [ClientRpc]
+        public void SendToClientClientRpc(string json, ClientRpcParams rpcParams = default)
+        {
+            ClientMessageHandler.Process(json);
+        }
+       
+        #endregion
     }
 }
+
