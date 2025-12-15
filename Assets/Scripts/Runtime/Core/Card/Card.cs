@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -10,8 +11,14 @@ namespace CardGame
         private CardData m_cardData;
         [SerializeField]
         private CardVisual m_cardVisual;
+        [SerializeField]
+        private Sprite m_faceUpImage;
+        [SerializeField]
+        private Sprite m_faceDownImage;
 
         [Header("UI Text")]
+        [SerializeField]
+        GameObject m_uiParent;
         [SerializeField]
         private TextMeshProUGUI costText;
         [SerializeField]
@@ -27,30 +34,77 @@ namespace CardGame
             get => isPlaced; set
             {
                 isPlaced = value;
-                if (isPlaced)
-                    CardEvents.AddCardToBoard(this);
-                else
-                    CardEvents.RemoveCardFromBoard(this);
+                HandlePlacement();   
             }
         }
         private void Awake()
         {
             Lock();
         }
+        private void OnDestroy()
+        {
+        }
+
+        private void HandlePlacement()
+        {
+            if (isPlaced)
+            {
+                CardEvents.AddCardToBoard(this);
+            }
+            else
+            {
+                CardEvents.RemoveCardFromBoard(this);
+            }
+        }
+
+
         public void Init()
         {
             costText.text = "Cost: " + CardData.cost.ToString();
             powerText.text = "Power: " + CardData.power.ToString();
             ability.text = "Ability: " + CardData.abilityData.type;
+            m_faceUpImage = CardData.Sprite;
+            FaceUp();
         }
-
+        public void Fold()
+        {
+            m_cardVisual.IsSelected = false;
+            m_cardVisual.CanSelect = false;
+            AttachTo();
+        }
+        void AttachTo()
+        {
+            var parent = GameObject.FindGameObjectWithTag("Board").GetComponent<RectTransform>();
+            transform.parent.SetParent(parent, false);
+            transform.eulerAngles = Vector3.zero;
+        }
         public void Lock()
         {
-            m_cardVisual.CanDrag = false;
+            if (m_cardVisual.IsSelected) return;
+            m_cardVisual.CanSelect = false;
         }
         public void UnLock()
         {
-            m_cardVisual.CanDrag = true;
+            m_cardVisual.CanSelect = true;
+        }
+
+        public void UpdateCard(int remainingCost)
+        {
+            if (CardData.cost > remainingCost)
+                Lock();
+            else
+                UnLock();
+        }
+
+        public void FaceDown()
+        {
+            m_cardVisual.SetVisual(m_faceDownImage);
+            m_uiParent.SetActive(false);
+        }
+        public void FaceUp()
+        {
+            m_cardVisual.SetVisual(m_faceUpImage);
+            m_uiParent.SetActive(true);
         }
     }
 }

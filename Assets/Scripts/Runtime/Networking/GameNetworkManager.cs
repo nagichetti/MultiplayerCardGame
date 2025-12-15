@@ -10,7 +10,7 @@ namespace CardGame
         [SerializeField]
         private LanListener lanListener;
 
-        public const Int32 Port = 6969;
+        public const Int32 Port = 47777;
         private bool broadCastSpawned, lanListenerSpawned;
         public void StartServer()
         {

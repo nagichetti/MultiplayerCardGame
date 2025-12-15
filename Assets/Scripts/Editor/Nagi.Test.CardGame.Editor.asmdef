@@ -2,7 +2,9 @@
     "name": "Nagi.Test.CardGame.Editor",
     "rootNamespace": "CardGame.Editor",
     "references": [
-        "GUID:a0089ea2189615f42a32c335c6979fe2"
+        "GUID:a0089ea2189615f42a32c335c6979fe2",
+        "GUID:9f4f5bf029cebb64f983b7bdc29f62a1",
+        "GUID:1491147abca9d7d4bb7105af628b223e"
     ],
     "includePlatforms": [
         "Editor"

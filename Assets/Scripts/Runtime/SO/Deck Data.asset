@@ -16,51 +16,10 @@ MonoBehaviour:
   StartingHand: 3
   Cards:
   - id: 1
-    name: A
+    name: Sheild
     cost: 1
     power: 2
     abilityData:
       type: 
       value: 0
-  - id: 2
-    name: B
-    cost: 1
-    power: 1
-    abilityData:
-      type: 
-      value: 0
-  - id: 3
-    name: C
-    cost: 2
-    power: 2
-    abilityData:
-      type: 
-      value: 0
-  - id: 4
-    name: D
-    cost: 2
-    power: 3
-    abilityData:
-      type: 
-      value: 0
-  - id: 5
-    name: E
-    cost: 2
-    power: 3
-    abilityData:
-      type: 
-      value: 0
-  - id: 6
-    name: F
-    cost: 2
-    power: 3
-    abilityData:
-      type: 
-      value: 0
-  - id: 7
-    name: G
-    cost: 3
-    power: 4
-    abilityData:
-      type: 
-      value: 0
+    Sprite: {fileID: -8458110195541571463, guid: 1c04877e4c5c148419f8d6e1ca014f14, type: 3}

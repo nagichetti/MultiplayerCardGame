@@ -10,6 +10,7 @@ namespace CardGame
         public int cost;
         public int power;
         public AbilityData abilityData;
+        public Sprite Sprite;
     }
     [System.Serializable]
     public class AbilityData

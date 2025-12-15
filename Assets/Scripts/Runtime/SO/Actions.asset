@@ -14,9 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enumName: Actions
   values:
-  - playerAssigned
   - gameStart
   - turnStart
   - turnEnd
-  - playerDisconnected
-  - playerJoin

@@ -6,6 +6,8 @@ namespace CardGame
     public class CardManager : Singleton<CardManager>
     {
         [SerializeField]
+        public GameData GameData;
+        [SerializeField]
         private DeckData DeckData;
         [SerializeField]
         private Card cardPrefab;
@@ -15,6 +17,8 @@ namespace CardGame
         [SerializeField]
         private List<Card> InHandCards;
         [SerializeField]
+        private List<Card> SelectedCards;
+        [SerializeField]
         private List<Card> InBoardCards;
 
         private int currentCardIndex;
@@ -23,11 +27,26 @@ namespace CardGame
             Debug.Log("Awake");
             base.Awake();
             GameEvents.OnGameStart += GameEvents_OnGameStart;
+            GameEvents.OnEndTurnPressed += GameEvents_OnEndTurnPressed;
+        }
+
+        private void GameEvents_OnEndTurnPressed()
+        {
+            foreach (var item in SelectedCards)
+            {
+                if(!InBoardCards.Contains(item))
+                {
+                    item.Fold();
+                    CardEvents.AddCardToBoard(item);
+                }
+            }
+            TurnManager.Instance.EndCurrentPlayerTurn();
         }
 
         private void OnDestroy()
         {
             GameEvents.OnGameStart -= GameEvents_OnGameStart;
+            GameEvents.OnEndTurnPressed -= GameEvents_OnEndTurnPressed;
         }
         public void AddCardToInHand(Card obj)
         {
@@ -39,18 +58,56 @@ namespace CardGame
             if (InHandCards.Contains(obj))
                 InHandCards.Remove(obj);
         }
+        public void AddCardToSelected(Card obj)
+        {
+            if (!SelectedCards.Contains(obj))
+            {
+                SelectedCards.Add(obj);
+                UpdateCost(-obj.CardData.cost);
+            }
+        }
+
+        public void RemoveCardFromSelected(Card obj)
+        {
+            if (SelectedCards.Contains(obj))
+            {
+                SelectedCards.Remove(obj);
+                UpdateCost(obj.CardData.cost);
+            }
+        }
         public void AddCardToBorad(Card obj)
         {
-            if(!InBoardCards.Contains(obj))
+            if (!InBoardCards.Contains(obj))
+            {
                 InBoardCards.Add(obj);
+            }
         }
 
         public void RemoveCardFromBorad(Card obj)
         {
             if (InBoardCards.Contains(obj))
+            {
                 InBoardCards.Remove(obj);
+            }
         }
-
+        public int GetPlayedCards()
+        {
+            if(InBoardCards!=null)
+                return InBoardCards.Count;
+            return 0;
+        }
+        private void UpdateCost(int cost = 0)
+        {
+            GameData.RemainingCost += cost;
+            UpdateCards();
+        }
+        public void UpdateCards()
+        {
+            foreach (var item in InHandCards)
+            {
+                item.UpdateCard(GameData.RemainingCost);
+            }
+        }
         private void GameEvents_OnGameStart(GameStartMessage obj)
         {
             Debug.Log("Giving out the cards");
@@ -74,12 +131,16 @@ namespace CardGame
         public void CreateShuffledDeck()
         {
             ShuffledCards = new List<CardData>();
-
-            foreach (var card in DeckData.Cards)
+            int cardCount = 0;
+            for (int i = 0; i < DeckData.DeckSize; i++)
             {
-                ShuffledCards.Add(card);
+                if (cardCount >= DeckData.Cards.Count)
+                {
+                    cardCount = 0;
+                }
+                ShuffledCards.Add(DeckData.Cards[cardCount]);
+                cardCount++;
             }
-
             Shuffle(ShuffledCards);
         }
 
@@ -106,6 +167,14 @@ namespace CardGame
             foreach (var card in InHandCards)
             {
                 card.UnLock();
+            }
+        }
+
+        public void LockBoardCards()
+        {
+            foreach (var card in InBoardCards)
+            {
+                card.Lock();
             }
         }
     }

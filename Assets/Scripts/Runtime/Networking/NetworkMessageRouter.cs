@@ -6,8 +6,9 @@ using UnityEngine;
 public class NetworkMessageRouter : NetworkBehaviour
 {
     public static NetworkMessageRouter Instance;
+    internal bool IsReady;
 
-    private void Awake()
+    public override void OnNetworkSpawn()
     {
         if (Instance != null && Instance != this)
         {
@@ -15,14 +16,21 @@ public class NetworkMessageRouter : NetworkBehaviour
             return;
         }
         Instance = this;
-    }
-
-    public override void OnNetworkSpawn()
-    {
         if (IsServer)
         {
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
+        }
+
+        if (IsClient)
+        {
+            IsReady = true;
+            Debug.Log("Router ready on client");
+        }
+
+        if (IsServer)
+        {
+            Debug.Log("Router ready on server");
         }
     }
 
@@ -37,15 +45,25 @@ public class NetworkMessageRouter : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void SendToServerRpc(string json, RpcParams rpcParams = default)
+    public void SendToServerRpc(string json)
     {
-        ServerMessageHandler.Process(json, rpcParams.Receive.SenderClientId);
+        ServerMessageHandler.Process(json, NetworkManager.Singleton.LocalClientId);
+    }
+    [ClientRpc]
+    public void ProcessFromClientRpc(string json, ulong senderClientId)
+    {
+        ServerMessageHandler.Process(json, senderClientId);
     }
 
+    //Sending msgs to client
     [ClientRpc]
     public void SendToClientClientRpc(string json)
     {
-        Debug.Log($"CLIENT RPC RECEIVED | IsHost={IsHost} | {json}");
+        ClientMessageHandler.Process(json);
+    }
+    [ClientRpc]
+    public void SendToClientClientRpc(string json, ClientRpcParams rpcParams = default)
+    {
         ClientMessageHandler.Process(json);
     }
 }

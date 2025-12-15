@@ -32,5 +32,10 @@ namespace CardGame
             GameEvents.PlayerJoined();
         }
 
+        public void SendLocalRpc(object msg)
+        {
+            JsonNetworkClient.SendToClients(msg);
+        }
+
     }
 }

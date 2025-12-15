@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -18,6 +19,9 @@ namespace CardGame
                 case nameof(Actions.turnStart):
                     HandleTurnStart(json);
                     break;
+                case nameof(Actions.turnEnd):
+                    HandleTurnEnd(json);
+                    break;
             }
             Debug.Log($"Action: {msg.action}");
         }
@@ -32,6 +36,11 @@ namespace CardGame
         {
             var msg = JsonUtility.FromJson<GameStartMessage>(json);
             GameEvents.GameStart(msg);
+        }
+        private static void HandleTurnEnd(string json)
+        {
+            var msg = JsonUtility.FromJson<TurnEndMessage>(json);
+            GameEvents.TurnEnd(msg);
         }
     }
 }

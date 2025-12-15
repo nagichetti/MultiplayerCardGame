@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace CardGame
 {
-    public class CardVisual : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
+    public class CardVisual : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler //,IDragHandler
     {
         [SerializeField]
         private InputAction screenPos;
@@ -17,28 +17,32 @@ namespace CardGame
         private SortingGroup m_sorting;
         private Camera cam;
         private Image m_cardImage;
-        
+
 
         [Header("Movement")]
         [SerializeField]
         private float moveSpeedLimit = 50;
         [SerializeField]
         private CurveParameters curve;
+        [SerializeField]
+        private Vector3 selectedOffset;
 
         private Vector3 offset;
         private float curveYOffset;
         private float curveRotationOffset;
         private bool isDragging;
-        private bool canDrag;
+        private bool isSelected;
+        private bool canSelect;
 
         [Header("Events")]
-        [HideInInspector]public UnityEvent<CardVisual> BeginDragEvent;
+        [HideInInspector] public UnityEvent<CardVisual> BeginDragEvent;
         [HideInInspector] public UnityEvent<CardVisual> EndDragEvent;
 
         public bool IsDragging => isDragging;
         public InputAction ScreenPos => screenPos;
 
-        public bool CanDrag { get => canDrag; set => canDrag = value; }
+        public bool CanSelect { get => canSelect; set => canSelect = value; }
+        public bool IsSelected { get => isSelected; set => isSelected = value; }
 
         private void OnEnable()
         {
@@ -82,6 +86,7 @@ namespace CardGame
             curveRotationOffset = curve.rotation.Evaluate(NormalizedPosition());
             Vector3 verticalOffset = (Vector3.up * (IsDragging ? 0 : curveYOffset));
             transform.position = transform.parent.position + verticalOffset;
+            transform.position = isSelected ? transform.position + selectedOffset : transform.position;
             var rot = transform.eulerAngles;
             rot.z = IsDragging ? transform.eulerAngles.z : (curveRotationOffset * (curve.rotationInfluence * SiblingAmount()));
             transform.eulerAngles = rot;
@@ -117,7 +122,7 @@ namespace CardGame
         #region InputHandling
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if(!CanDrag) return;
+            if (!CanSelect) return;
 
             BeginDragEvent?.Invoke(this);
             isDragging = true;
@@ -129,7 +134,7 @@ namespace CardGame
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if(!CanDrag) return;
+            if (!CanSelect) return;
 
             EndDragEvent?.Invoke(this);
             isDragging = false;
@@ -137,11 +142,25 @@ namespace CardGame
             m_sorting.sortingOrder = 1;
         }
 
-        public void OnPointerDown(PointerEventData eventData){ }
-        public void OnPointerEnter(PointerEventData eventData){ }
-        public void OnPointerExit(PointerEventData eventData){ }
-        public void OnPointerUp(PointerEventData eventData){ }
-        public void OnDrag(PointerEventData eventData) { }
+        public void OnPointerDown(PointerEventData eventData) { }
+        public void OnPointerEnter(PointerEventData eventData) { }
+        public void OnPointerExit(PointerEventData eventData) { }
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            if (!CanSelect) return;
+            isSelected = !isSelected;
+            if (IsSelected)
+                CardManager.Instance.AddCardToSelected(m_card);
+            else
+                CardManager.Instance.RemoveCardFromSelected(m_card);
+        }
+
+        public void SetVisual(Sprite sprite)
+        {
+            m_cardImage = GetComponent<Image>();
+            m_cardImage.sprite = sprite;
+        }
+        //public void OnDrag(PointerEventData eventData) { }
         #endregion
     }
 }

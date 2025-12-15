@@ -1,5 +1,7 @@
 using System;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CardGame
 {
@@ -9,9 +11,37 @@ namespace CardGame
         private PlayerSlot slot;
         [SerializeField]
         private GameData GameData;
+
+        [Header("Text")]
+        [SerializeField]
+        private TextMeshProUGUI m_remainingCostText;
+        [SerializeField]
+        private TextMeshProUGUI m_playerName;
+        [SerializeField]
+        private TextMeshProUGUI m_timer;
+
+        [SerializeField]
+        Button m_button;
         private void OnEnable()
         {
             slot = LocalPlayerContext.MySlot;
+            GameData.OnUpdateGameData += GameData_OnUpdateGameData;
+            m_button.onClick.AddListener(EndTurn);
+        }
+
+        private void EndTurn()
+        {
+            GameEvents.EndTurnPressed();
+        }
+
+        private void OnDisable()
+        {
+            GameData.OnUpdateGameData -= GameData_OnUpdateGameData;
+            m_button.onClick.RemoveListener(EndTurn);
+        }
+        private void GameData_OnUpdateGameData()
+        {
+            m_remainingCostText.text = GameData.RemainingCost.ToString();
         }
     }
 }

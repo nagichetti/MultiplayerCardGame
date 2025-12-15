@@ -139,8 +139,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -276,8 +276,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -413,8 +413,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -486,7 +486,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3177899929064206672}
   - component: {fileID: 881809032059616554}
-  - component: {fileID: 8496303449291454641}
+  - component: {fileID: 5820684984490646698}
   - component: {fileID: 4175142399871282257}
   - component: {fileID: 4779533136829524249}
   - component: {fileID: 7753442530752647775}
@@ -527,7 +527,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8480334027309107252}
   m_CullTransparentMesh: 1
---- !u!114 &8496303449291454641
+--- !u!114 &5820684984490646698
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -547,7 +547,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3427e204496b44b49a10dfbb2dbea3b2, type: 3}
+  m_Sprite: {fileID: 4168041445391471708, guid: 5e69ae46ffe46d8459a5405526cf6821, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -577,7 +577,11 @@ MonoBehaviour:
     abilityData:
       type: 
       value: 0
+    Sprite: {fileID: 0}
   m_cardVisual: {fileID: 7753442530752647775}
+  m_faceUpImage: {fileID: 0}
+  m_faceDownImage: {fileID: 4168041445391471708, guid: 5e69ae46ffe46d8459a5405526cf6821, type: 3}
+  m_uiParent: {fileID: 415217861322938564}
   costText: {fileID: 3443874983132316681}
   powerText: {fileID: 1458073964071635406}
   ability: {fileID: 2043487212012213995}
@@ -621,7 +625,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 8496303449291454641}
+  m_TargetGraphic: {fileID: 5820684984490646698}
 --- !u!114 &7753442530752647775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -662,6 +666,7 @@ MonoBehaviour:
   m_card: {fileID: 4175142399871282257}
   moveSpeedLimit: 50
   curve: {fileID: 11400000, guid: d4dd399fb2dab44429d866dc2259bb4b, type: 2}
+  selectedOffset: {x: 0, y: 0.3, z: 0}
   BeginDragEvent:
     m_PersistentCalls:
       m_Calls: []

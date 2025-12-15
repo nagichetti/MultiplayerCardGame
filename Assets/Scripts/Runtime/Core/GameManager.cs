@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
@@ -18,6 +19,8 @@ namespace CardGame
         private bool GameStarted;
 
         private NetworkPlayer networkPlayer;
+
+        public bool spam;
         public override void Awake()
         {
             base.Awake();
@@ -55,8 +58,35 @@ namespace CardGame
             if (GameData.PlayersJoined == GameData.PlayersNeeded && !GameStarted)
             {
                 GameStarted = true;
-                ServerSession.StartGame();
+                StartCoroutine(StartGameWithDelay());
+                //StartMatch();
             }
+        }
+        IEnumerator StartGameWithDelay()
+        {
+            yield return new WaitForSeconds(2f);
+                ServerSession.StartGame();
+
+        }
+        private void OnValidate()
+        {
+            if (spam)
+            {
+                StartMatch();
+                spam = false;
+            }
+        }
+        private void StartMatch()
+        {
+            var msg = new GameStartMessage
+            {
+                action = nameof(Actions.gameStart),
+                playerIds = GameData.PlayerIds.ToArray(),
+                totalTurns = GameData.Totalturns
+            };
+            Debug.Log("Sending" + msg.action);
+
+            JsonNetworkClient.SendToClients(msg);
         }
     }
 }

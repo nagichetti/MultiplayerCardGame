@@ -2,8 +2,9 @@ using UnityEngine;
 
 namespace CardGame
 {
-    public class JoinMessage : NetworkMessage
+    public class TurnEndMessage : NetworkMessage
     {
         public string playerId;
+        public int playedCards;
     }
 }

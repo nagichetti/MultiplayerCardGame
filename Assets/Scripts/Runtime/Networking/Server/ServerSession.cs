@@ -54,9 +54,9 @@ namespace CardGame
             NetworkMessageRouter.Instance.SendToClientClientRpc(json);
         }
 
-        public static void Broadcast(string msg)
+        public static void Broadcast(string json)
         {
-            NetworkMessageRouter.Instance.SendToClientClientRpc(msg);
+            NetworkMessageRouter.Instance.SendToClientClientRpc(json);
         }
     }
 }

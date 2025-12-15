@@ -1,4 +1,4 @@
-using Unity.Netcode;
+using System;
 using UnityEngine;
 
 namespace CardGame
@@ -14,13 +14,15 @@ namespace CardGame
             switch (msg.action)
             {
                 case nameof(Actions.gameStart):
-                    ValidateGameStart(json, senderClientId);
+                    ValidateGameStart(json);
                     break;
 
                 case nameof(Actions.turnStart):
-                    ValidateTurnStart(json, senderClientId);
+                    ValidateTurnStart(json);
                     break;
-
+                case nameof(Actions.turnEnd):
+                    ValidateTurnEnd(json);
+                    break;
                 default:
                     Debug.LogError($"Unknown or invalid server message: {msg.action}");
                     break;
@@ -29,13 +31,17 @@ namespace CardGame
             Debug.Log($"Validating {msg.action}");
         }
 
-
-        private static void ValidateGameStart(string json, ulong senderClientId)
+        private static void ValidateTurnEnd(string json)
         {
             ServerSession.Broadcast(json);
         }
 
-        private static void ValidateTurnStart(string json, ulong senderClientId)
+        private static void ValidateGameStart(string json)
+        {
+            ServerSession.Broadcast(json);
+        }
+
+        private static void ValidateTurnStart(string json)
         {
             ServerSession.Broadcast(json);
         }

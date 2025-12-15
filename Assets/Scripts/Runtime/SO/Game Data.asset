@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bce6fd3265a173e4faaeba38c952f1db, type: 3}
   m_Name: Game Data
   m_EditorClassIdentifier: 
+  PlayerId: 0
   PlayersNeeded: 2
   PlayerIds: []
   Totalturns: 6
   PlayersJoined: 0
+  RemainingCost: 0
+  MyScore: 0
+  OppScore: 0
