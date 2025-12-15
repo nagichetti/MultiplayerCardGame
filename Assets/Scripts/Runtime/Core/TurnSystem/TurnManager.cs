@@ -12,6 +12,9 @@ namespace CardGame
 
         public PlayerSlot currentplayerTurn;
 
+        private int playerTurnEndedCount;
+        private int gameTurnEndedCount;
+
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
@@ -25,6 +28,7 @@ namespace CardGame
             GameEvents.OnTurnStart += GameEvents_OnTurnStart;
             GameEvents.OnTurnEnd += GameEvents_OnTurnEnd;
         }
+
         public override void OnNetworkDespawn()
         {
             base.OnNetworkDespawn();
@@ -54,9 +58,17 @@ namespace CardGame
                 CardManager.Instance.UpdateCards();
             else
                 CardManager.Instance.LockInHandCards();
+            
         }
         private void GameEvents_OnTurnEnd(TurnEndMessage obj)
         {
+            playerTurnEndedCount++;
+
+            if (playerTurnEndedCount == 2)
+            {
+                SendPlayersReady();
+                return;
+            }
             PlayerSlot nextPlayer = currentplayerTurn == PlayerSlot.Player1 ? PlayerSlot.Player2 : PlayerSlot.Player1;
 
             currentplayerTurn = nextPlayer;
@@ -65,9 +77,8 @@ namespace CardGame
             CardManager.Instance.LockBoardCards();
 
             SendStartTurnMsg(nextPlayer);
+            gameTurnEndedCount++;
         }
-
-
 
         public void EndCurrentPlayerTurn()
         {
@@ -76,7 +87,6 @@ namespace CardGame
         }
         private void SendStartTurnMsg(PlayerSlot playerSlot)
         {
-            if (!IsOwner) return;
             TurnStartMessage turnStartMsg = new TurnStartMessage
             {
                 action = nameof(Actions.turnStart),
@@ -95,6 +105,23 @@ namespace CardGame
             };
 
             JsonNetworkClient.SendToClients(turnEndMsg);
+        }
+        public void SendPlayersReady()
+        {
+            AllPlayersReadyMessage msg = new AllPlayersReadyMessage
+            {
+                action = nameof(Actions.allPlayersReady)
+            };
+
+            JsonNetworkClient.SendToClients(msg);
+        }
+
+        public void StartNextTurn(PlayerSlot playerSlot)
+        {
+            if (gameTurnEndedCount >= GameData.Totalturns) return;
+            playerTurnEndedCount = 0;
+            CardManager.Instance.GiveNextCards(1);
+            SendStartTurnMsg(playerSlot);
         }
     }
 }

@@ -18,12 +18,25 @@ namespace CardGame
         {
             CardEvents.OnAddCardToBorad += CardEvents_OnAddCardToBorad;
             CardEvents.OnRemoveCardFromBorad += CardEvents_OnRemoveCardFromBorad;
+            CardEvents.OnRevealCard += CardEvents_OnRevealCard;
+            CardEvents.OnRevealEnd += RemoveCards;
         }
 
         private void OnDestroy()
         {
             CardEvents.OnAddCardToBorad -= CardEvents_OnAddCardToBorad;
             CardEvents.OnRemoveCardFromBorad -= CardEvents_OnRemoveCardFromBorad;
+            CardEvents.OnRevealCard -= CardEvents_OnRevealCard;
+            CardEvents.OnRevealEnd -= RemoveCards;
+        }
+        private void CardEvents_OnRevealCard(string playerId, CardData obj)
+        {
+            if (LocalPlayerContext.MySlot.ToString() != playerId) return;
+            foreach (var item in m_placedCards)
+            {
+                if (item.CardData.id == obj.id)
+                    item.FaceUp();
+            }
         }
         private void CardEvents_OnAddCardToBorad(Card card)
         {
@@ -39,6 +52,12 @@ namespace CardGame
                 m_placedCards.Remove(card);
            
             CardEvents.AddCardToHand(card);
+        }
+        private void RemoveCards()
+        {
+            if (m_placedCards.Count > 0)
+                m_placedCards.ForEach(x => Destroy(x.transform.parent.gameObject));
+            m_placedCards.Clear();
         }
     }
 }

@@ -7,6 +7,7 @@ namespace CardGame
         [SerializeField]
         private Card m_card;
 
+        public Card Card => m_card;
         private void OnEnable()
         {
             m_card.FaceDown();

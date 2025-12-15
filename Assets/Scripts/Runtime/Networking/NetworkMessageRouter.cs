@@ -49,11 +49,6 @@ public class NetworkMessageRouter : NetworkBehaviour
     {
         ServerMessageHandler.Process(json, NetworkManager.Singleton.LocalClientId);
     }
-    [ClientRpc]
-    public void ProcessFromClientRpc(string json, ulong senderClientId)
-    {
-        ServerMessageHandler.Process(json, senderClientId);
-    }
 
     //Sending msgs to client
     [ClientRpc]

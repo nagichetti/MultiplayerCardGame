@@ -14,16 +14,15 @@ namespace CardGame
         private int currentTurn = 0;
         public int PlayersJoined;
         private int remainingCost;
-        private int myScore;
-        private int oppScore;
+        private Dictionary<PlayerSlot, int> playerScores = new();
 
         public int CurrentTurn { get => currentTurn; set { currentTurn = value; GameDataUpdated(); } }
         public int RemainingCost
         {
             get => remainingCost; set { remainingCost = value; GameDataUpdated(); }
         }
-        public int MyScore { get => myScore; set { myScore = value; GameDataUpdated(); } }
-        public int OppScore { get => oppScore; set { oppScore = value; GameDataUpdated(); } }
+
+        public Dictionary<PlayerSlot, int> PlayerScores { get => playerScores; set { playerScores = value; } }
 
         public void ResetData()
         {

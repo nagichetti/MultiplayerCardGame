@@ -63,7 +63,6 @@ namespace CardGame
             costText.text = "Cost: " + CardData.cost.ToString();
             powerText.text = "Power: " + CardData.power.ToString();
             ability.text = "Ability: " + CardData.abilityData.type;
-            m_faceUpImage = CardData.Sprite;
             FaceUp();
         }
         public void Fold()

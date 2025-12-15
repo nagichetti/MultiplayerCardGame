@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 namespace CardGame
 {
@@ -10,6 +9,8 @@ namespace CardGame
         public static event Action<Card> OnRemoveCardFromHand;
         public static event Action<Card> OnAddCardToBorad;
         public static event Action<Card> OnRemoveCardFromBorad;
+        public static event Action<string, CardData> OnRevealCard;
+        public static event Action OnRevealEnd;
 
         public static void SpawnCardToHand(Card card)
         {
@@ -34,6 +35,14 @@ namespace CardGame
         {
             OnRemoveCardFromBorad?.Invoke(card);
             CardManager.Instance.RemoveCardFromBorad(card);
+        }
+        public static void RevealCard(string playerId, CardData card)
+        {
+            OnRevealCard?.Invoke(playerId, card);
+        }
+        public static void RevealEnd()
+        {
+            OnRevealEnd?.Invoke();
         }
     }
 }

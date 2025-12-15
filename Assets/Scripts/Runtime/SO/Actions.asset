@@ -15,5 +15,7 @@ MonoBehaviour:
   enumName: Actions
   values:
   - gameStart
+  - allPlayersReady
   - turnStart
   - turnEnd
+  - revealCard

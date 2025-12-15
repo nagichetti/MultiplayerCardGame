@@ -1,10 +1,12 @@
-using UnityEngine;
+using System;
+using System.Collections.Generic;
 
 namespace CardGame
 {
+    [Serializable]
     public class TurnEndMessage : NetworkMessage
     {
         public string playerId;
-        public int playedCards;
+        public List<CardData> playedCards;
     }
 }

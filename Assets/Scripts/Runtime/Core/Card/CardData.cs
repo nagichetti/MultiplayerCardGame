@@ -10,7 +10,18 @@ namespace CardGame
         public int cost;
         public int power;
         public AbilityData abilityData;
-        public Sprite Sprite;
+
+        public CardData Clone()
+        {
+            return new CardData
+            {
+                id = this.id,
+                name = this.name,
+                cost = this.cost,
+                power = this.power,
+                abilityData = this.abilityData,
+            };
+        }
     }
     [System.Serializable]
     public class AbilityData

@@ -30,23 +30,24 @@ namespace CardGame
             GameEvents.OnEndTurnPressed += GameEvents_OnEndTurnPressed;
         }
 
+        private void OnDestroy()
+        {
+            GameEvents.OnGameStart -= GameEvents_OnGameStart;
+            GameEvents.OnEndTurnPressed -= GameEvents_OnEndTurnPressed;
+        }
         private void GameEvents_OnEndTurnPressed()
         {
+            if (RevealManager.Instance.IsRevealPhase) return;
+
             foreach (var item in SelectedCards)
             {
-                if(!InBoardCards.Contains(item))
+                if (!InBoardCards.Contains(item))
                 {
                     item.Fold();
                     CardEvents.AddCardToBoard(item);
                 }
             }
             TurnManager.Instance.EndCurrentPlayerTurn();
-        }
-
-        private void OnDestroy()
-        {
-            GameEvents.OnGameStart -= GameEvents_OnGameStart;
-            GameEvents.OnEndTurnPressed -= GameEvents_OnEndTurnPressed;
         }
         public void AddCardToInHand(Card obj)
         {
@@ -90,11 +91,18 @@ namespace CardGame
                 InBoardCards.Remove(obj);
             }
         }
-        public int GetPlayedCards()
+        public List<CardData> GetPlayedCards()
         {
-            if(InBoardCards!=null)
-                return InBoardCards.Count;
-            return 0;
+            if (InBoardCards != null)
+            {
+                var playedCards = new List<CardData>();
+                foreach (var card in InBoardCards)
+                {
+                    playedCards.Add(card.CardData);
+                }
+                return playedCards;
+            }
+            return null;
         }
         private void UpdateCost(int cost = 0)
         {
@@ -112,11 +120,17 @@ namespace CardGame
         {
             Debug.Log("Giving out the cards");
             CreateShuffledDeck();
+
+            for (int i = 0; i < ShuffledCards.Count; i++)
+            {
+                ShuffledCards[i].id = i;
+            }
+
             for (int i = 0; i < DeckData.StartingHand; i++)
             {
                 cardPrefab.CardData = ShuffledCards[i];
                 CardEvents.SpawnCardToHand(cardPrefab);
-                currentCardIndex = i;
+                currentCardIndex = i+1;
             }
         }
         public void GiveNextCards(int cardCount)
@@ -131,19 +145,21 @@ namespace CardGame
         public void CreateShuffledDeck()
         {
             ShuffledCards = new List<CardData>();
+
             int cardCount = 0;
+
             for (int i = 0; i < DeckData.DeckSize; i++)
             {
                 if (cardCount >= DeckData.Cards.Count)
-                {
                     cardCount = 0;
-                }
-                ShuffledCards.Add(DeckData.Cards[cardCount]);
+
+                ShuffledCards.Add(DeckData.Cards[cardCount].Clone());
+
                 cardCount++;
             }
+
             Shuffle(ShuffledCards);
         }
-
         void Shuffle<T>(List<T> list)
         {
             for (int i = list.Count - 1; i > 0; i--)
@@ -176,6 +192,17 @@ namespace CardGame
             {
                 card.Lock();
             }
+        }
+        public List<Card> GetBoardCards()
+        {
+            return InBoardCards;
+        }
+        public void ClearPlayedCards()
+        {
+            SelectedCards.Clear();
+            InBoardCards.Clear();
+            InBoardCards = new List<Card>();
+            SelectedCards = new List<Card>();
         }
     }
 }
