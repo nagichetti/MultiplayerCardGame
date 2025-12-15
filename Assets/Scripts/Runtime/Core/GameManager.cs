@@ -7,18 +7,21 @@ namespace CardGame
     public class GameManager : Singleton<GameManager>
     {
         [SerializeField]
-        private GameData GameData;
+        public GameData GameData;
         [SerializeField]
         private NetworkPlayer m_networkPrefab;
         [SerializeField]
         private GameObject m_mainMenu;
         [SerializeField]
         private GameObject m_game;
+
+        private bool GameStarted;
+
+        private NetworkPlayer networkPlayer;
         public override void Awake()
         {
             base.Awake();
             GameEvents.OnPlayerJoined += GameEvents_OnPlayerJoined;
-            GameEvents.OnPlayerQuit += GameEvents_OnPlayerQuit;
             GameEvents.OnGameStart += GameEvents_OnGameStart;
         }
 
@@ -26,7 +29,6 @@ namespace CardGame
         {
             GameData.ResetData();
             GameEvents.OnPlayerJoined -= GameEvents_OnPlayerJoined;
-            GameEvents.OnPlayerQuit -= GameEvents_OnPlayerQuit;
             GameEvents.OnGameStart -= GameEvents_OnGameStart;
         }
 
@@ -43,36 +45,18 @@ namespace CardGame
             GameData.Totalturns = obj.totalTurns;
         }
 
-        private void GameEvents_OnPlayerJoined(PlayerSlot obj, ulong clienId)
+        private void GameEvents_OnPlayerJoined()
         {
-           /* NetworkPlayer player = Instantiate(m_networkPrefab);
-            player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clienId);*/
+            if (!NetworkManager.Singleton.IsServer)
+                return;
 
             GameData.PlayersJoined++;
-            GameData.PlayerIds.Add(obj.ToString());
 
-            if (GameData.PlayersJoined == GameData.PlayersNeeded)
-                StartMatch();
-        }
-        private void GameEvents_OnPlayerQuit(PlayerSlot slot, ulong clientId)
-        {
-            GameData.PlayersJoined--;
-
-            if (GameData.PlayerIds.Contains(nameof(slot)))
-                GameData.PlayerIds.Remove(nameof(slot));
-        }
-
-        private void StartMatch()
-        {
-            var msg = new GameStartMessage
+            if (GameData.PlayersJoined == GameData.PlayersNeeded && !GameStarted)
             {
-                action = nameof(Actions.gameStart),
-                playerIds = GameData.PlayerIds.ToArray(),
-                totalTurns = GameData.Totalturns
-            };
-            Debug.Log("Sending" + msg.action);
-
-            JsonNetworkClient.Send(msg);
+                GameStarted = true;
+                ServerSession.StartGame();
+            }
         }
     }
 }

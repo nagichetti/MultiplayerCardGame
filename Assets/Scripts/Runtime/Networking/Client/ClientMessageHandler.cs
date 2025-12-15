@@ -31,8 +31,6 @@ namespace CardGame
         private static void HandleGameStart(string json)
         {
             var msg = JsonUtility.FromJson<GameStartMessage>(json);
-
-
             GameEvents.GameStart(msg);
         }
     }

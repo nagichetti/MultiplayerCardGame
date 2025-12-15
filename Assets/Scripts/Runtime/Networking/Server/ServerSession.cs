@@ -10,11 +10,6 @@ namespace CardGame
         Player1,
         Player2
     }
-
-    /// <summary>
-    /// Server-only session state.
-    /// Tracks slot assignment, connection lifecycle, and reconnection.
-    /// </summary>
     public static class ServerSession
     {
         public static bool ClientDisconnected;
@@ -39,10 +34,29 @@ namespace CardGame
                 ClientDisconnected = false;
             }
         }
-        public static void Broadcast(object msg)
+
+        public static void StartGame()
         {
+            if (!NetworkManager.Singleton.IsServer)
+                return;
+
+            Debug.Log("SERVER starting game");
+
+            var msg = new GameStartMessage
+            {
+                action = nameof(Actions.gameStart),
+                playerIds = new[] { "Player1", "Player2" },
+                totalTurns = GameManager.Instance.GameData.Totalturns
+            };
+
             string json = JsonUtility.ToJson(msg);
+
             NetworkMessageRouter.Instance.SendToClientClientRpc(json);
+        }
+
+        public static void Broadcast(string msg)
+        {
+            NetworkMessageRouter.Instance.SendToClientClientRpc(msg);
         }
     }
 }

@@ -1,68 +1,51 @@
+using CardGame;
 using System;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace CardGame
+public class NetworkMessageRouter : NetworkBehaviour
 {
-    public class NetworkMessageRouter : NetworkBehaviour
+    public static NetworkMessageRouter Instance;
+
+    private void Awake()
     {
-        public static NetworkMessageRouter Instance;
-        private void Awake()
+        if (Instance != null && Instance != this)
         {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            Instance = this;
-
+            Destroy(gameObject);
+            return;
         }
+        Instance = this;
+    }
 
-        //OnNetwork spawn if its server listen to client joining events
-        public override void OnNetworkSpawn()
+    public override void OnNetworkSpawn()
+    {
+        if (IsServer)
         {
-            base.OnNetworkSpawn();
-            if (IsServer)
-            {
-                NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
-                NetworkManager.Singleton.OnClientConnectedCallback += Singleton_OnClientConnectedCallback; ;
-            }
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
         }
+    }
 
-        private void Singleton_OnClientConnectedCallback(ulong obj)
-        {
-            ServerSession.OnClientConnected(obj);
-        }
+    private void OnClientConnectedCallback(ulong clientId)
+    {
+        ServerSession.OnClientConnected(clientId);
+    }
 
+    private void OnClientDisconnectCallback(ulong clientId)
+    {
+        ServerSession.OnClientDisconnected(clientId);
+    }
 
-        //UnRegister from the serversession
-        private void OnClientDisconnectCallback(ulong obj)
-        {
-            ServerSession.OnClientDisconnected(obj);
-            NetworkManager.Singleton.Shutdown();
-        }
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void SendToServerRpc(string json, RpcParams rpcParams = default)
+    {
+        ServerMessageHandler.Process(json, rpcParams.Receive.SenderClientId);
+    }
 
-        #region Communication
-        //Sending msgs to server
-        [ServerRpc(InvokePermission = RpcInvokePermission.Everyone)]
-        public void SendToServerRpc(string json, ServerRpcParams rpcParams = default)
-        {
-            ServerMessageHandler.Process(json, rpcParams.Receive.SenderClientId);
-        }
-        [ClientRpc]
-        public void ProcessFromClientRpc(string json, ulong senderClientId)
-        {
-            ServerMessageHandler.Process(json, senderClientId);
-        }
-
-        //Sending msgs to client
-        [ClientRpc]
-        public void SendToClientClientRpc(string json, ClientRpcParams rpcParams = default)
-        {
-            ClientMessageHandler.Process(json);
-        }
-       
-        #endregion
+    [ClientRpc]
+    public void SendToClientClientRpc(string json)
+    {
+        Debug.Log($"CLIENT RPC RECEIVED | IsHost={IsHost} | {json}");
+        ClientMessageHandler.Process(json);
     }
 }
-

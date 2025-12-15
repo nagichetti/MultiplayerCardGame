@@ -29,15 +29,8 @@ namespace CardGame
                     LocalPlayerContext.SetSlot(PlayerSlot.Player2);
                 }
             }
+            GameEvents.PlayerJoined();
         }
 
-        [ServerRpc(InvokePermission = RpcInvokePermission.Everyone)]
-        public void SendToServerServerRpc(string json, ServerRpcParams rpcParams = default)
-        {
-            NetworkMessageRouter.Instance.ProcessFromClientRpc(
-                json,
-                rpcParams.Receive.SenderClientId
-            );
-        }
     }
 }

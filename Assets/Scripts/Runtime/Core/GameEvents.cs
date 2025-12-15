@@ -5,18 +5,13 @@ namespace CardGame
 {
     public static class GameEvents
     {
-        public static event Action<PlayerSlot, ulong> OnPlayerJoined;
-        public static event Action<PlayerSlot, ulong> OnPlayerQuit;
+        public static event Action OnPlayerJoined;
         public static event Action<GameStartMessage> OnGameStart;
         public static event Action<TurnStartMessage> OnTurnStart;
         
-        public static void PlayerJoined(PlayerSlot playerId, ulong clientId)
+        public static void PlayerJoined()
         {
-            OnPlayerJoined?.Invoke(playerId, clientId);
-        }
-        public static void PlayerQuit(PlayerSlot playerId, ulong clientId)
-        {
-            OnPlayerQuit?.Invoke(playerId, clientId);
+            OnPlayerJoined?.Invoke();
         }
         public static void GameStart(GameStartMessage msg)
         {

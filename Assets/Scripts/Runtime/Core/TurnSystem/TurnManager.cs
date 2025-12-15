@@ -15,16 +15,13 @@ namespace CardGame
             NetworkPlayer.OnSpawnLocalPlayer += NetworkPlayer_OnSpawnLocalPlayer;
         }
 
-        private void NetworkPlayer_OnSpawnLocalPlayer(NetworkPlayer obj)
-        {
-            player = obj;
-        }
-
         private void OnDestroy()
         {
             GameEvents.OnGameStart -= GameEvents_OnGameStart;
             GameEvents.OnTurnStart -= GameEvents_OnTurnStart;
+            NetworkPlayer.OnSpawnLocalPlayer -= NetworkPlayer_OnSpawnLocalPlayer;
         }
+        private void NetworkPlayer_OnSpawnLocalPlayer(NetworkPlayer obj) => player = obj;
         private void GameEvents_OnGameStart(GameStartMessage obj)
         {
             TurnStartMessage turnStartMsg = new TurnStartMessage
@@ -33,8 +30,7 @@ namespace CardGame
                 playerId = LocalPlayerContext.MySlot.ToString()
             };
 
-            var msg = JsonUtility.ToJson(turnStartMsg);
-            player.SendToServerServerRpc(msg);
+            JsonNetworkClient.Send(turnStartMsg);
         }
         private void GameEvents_OnTurnStart(TurnStartMessage obj)
         {
