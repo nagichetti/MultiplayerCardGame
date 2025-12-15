@@ -1,5 +1,6 @@
 using System;
 using Unity.Netcode;
+using UnityEngine;
 
 namespace CardGame
 {
@@ -15,9 +16,22 @@ namespace CardGame
                 OnSpawnLocalPlayer?.Invoke(this);
             else
                 OnSpawnRemotePlayer?.Invoke(this);
+
+            if (IsOwner)
+            {
+                // Local player
+                if (IsHost)
+                {
+                    LocalPlayerContext.SetSlot(PlayerSlot.Player1);
+                }
+                else
+                {
+                    LocalPlayerContext.SetSlot(PlayerSlot.Player2);
+                }
+            }
         }
 
-        [ServerRpc]
+        [ServerRpc(InvokePermission = RpcInvokePermission.Everyone)]
         public void SendToServerServerRpc(string json, ServerRpcParams rpcParams = default)
         {
             NetworkMessageRouter.Instance.ProcessFromClientRpc(

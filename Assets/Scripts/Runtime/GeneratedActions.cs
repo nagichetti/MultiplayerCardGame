@@ -3,5 +3,7 @@ public enum Actions
     playerAssigned,
     gameStart,
     turnStart,
-    turnEnd
+    turnEnd,
+    playerDisconnected,
+    playerJoin
 }

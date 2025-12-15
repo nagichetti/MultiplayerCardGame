@@ -1,4 +1,3 @@
-using System;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -13,9 +12,6 @@ namespace CardGame
 
             switch (msg.action)
             {
-                case nameof(Actions.playerAssigned):
-                    HandlePlayerAssigned(json);
-                    break;
                 case nameof(Actions.gameStart):
                     HandleGameStart(json);
                     break;
@@ -26,13 +22,6 @@ namespace CardGame
             Debug.Log($"Action: {msg.action}");
         }
 
-        private static void HandlePlayerAssigned(string json)
-        {
-            var msg = JsonUtility.FromJson<PlayerAssignMessage>(json);
-
-            PlayerSlot slot = Enum.Parse<PlayerSlot>(msg.playerSlot);
-            LocalPlayerContext.Set(slot, NetworkManager.Singleton.LocalClientId);
-        }
         private static void HandleTurnStart(string json)
         {
             var msg = JsonUtility.FromJson<TurnStartMessage>(json);
@@ -42,6 +31,8 @@ namespace CardGame
         private static void HandleGameStart(string json)
         {
             var msg = JsonUtility.FromJson<GameStartMessage>(json);
+
+
             GameEvents.GameStart(msg);
         }
     }

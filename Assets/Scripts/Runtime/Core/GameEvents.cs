@@ -1,11 +1,12 @@
 using System;
+using UnityEditor.PackageManager;
 
 namespace CardGame
 {
     public static class GameEvents
     {
         public static event Action<PlayerSlot, ulong> OnPlayerJoined;
-        public static event Action<string> OnPlayerQuit;
+        public static event Action<PlayerSlot, ulong> OnPlayerQuit;
         public static event Action<GameStartMessage> OnGameStart;
         public static event Action<TurnStartMessage> OnTurnStart;
         
@@ -13,9 +14,9 @@ namespace CardGame
         {
             OnPlayerJoined?.Invoke(playerId, clientId);
         }
-        public static void PlayerQuit(string playerId)
+        public static void PlayerQuit(PlayerSlot playerId, ulong clientId)
         {
-            OnPlayerQuit?.Invoke(playerId);
+            OnPlayerQuit?.Invoke(playerId, clientId);
         }
         public static void GameStart(GameStartMessage msg)
         {

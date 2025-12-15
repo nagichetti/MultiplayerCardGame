@@ -1,5 +1,6 @@
 using System;
 using Unity.Netcode;
+using UnityEngine;
 
 namespace CardGame
 {
@@ -14,35 +15,39 @@ namespace CardGame
                 return;
             }
             Instance = this;
+
         }
+
         //OnNetwork spawn if its server listen to client joining events
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
             if (IsServer)
             {
-                NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
                 NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
+                NetworkManager.Singleton.OnClientConnectedCallback += Singleton_OnClientConnectedCallback; ;
             }
+        }
 
-        }
-        //Register from the serversession
-        private void OnClientConnectedCallback(ulong obj)
+        private void Singleton_OnClientConnectedCallback(ulong obj)
         {
-            ServerSession.RegisterPlayer(obj);
+            ServerSession.OnClientConnected(obj);
         }
+
+
         //UnRegister from the serversession
         private void OnClientDisconnectCallback(ulong obj)
         {
-            ServerSession.UnregisterPlayer(obj);
+            ServerSession.OnClientDisconnected(obj);
+            NetworkManager.Singleton.Shutdown();
         }
 
         #region Communication
         //Sending msgs to server
         [ServerRpc(InvokePermission = RpcInvokePermission.Everyone)]
-        public void SendToServerRpc(string json)
+        public void SendToServerRpc(string json, ServerRpcParams rpcParams = default)
         {
-            ServerMessageHandler.Process(json, OwnerClientId);
+            ServerMessageHandler.Process(json, rpcParams.Receive.SenderClientId);
         }
         [ClientRpc]
         public void ProcessFromClientRpc(string json, ulong senderClientId)
@@ -51,11 +56,6 @@ namespace CardGame
         }
 
         //Sending msgs to client
-        [ClientRpc]
-        public void SendToClientClientRpc(string json)
-        {
-            ClientMessageHandler.Process(json);
-        }
         [ClientRpc]
         public void SendToClientClientRpc(string json, ClientRpcParams rpcParams = default)
         {

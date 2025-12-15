@@ -11,7 +11,7 @@ namespace CardGame
         private GameData GameData;
         private void OnEnable()
         {
-            slot = LocalPlayerContext.Slot;
+            slot = LocalPlayerContext.MySlot;
         }
     }
 }

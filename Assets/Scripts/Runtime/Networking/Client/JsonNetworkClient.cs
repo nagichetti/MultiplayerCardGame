@@ -5,7 +5,7 @@ namespace CardGame
 {
     public static class JsonNetworkClient
     {
-        public static void SendToClients(object msg)
+        public static void Send(object msg)
         {
             string json = JsonUtility.ToJson(msg);
             NetworkMessageRouter.Instance.SendToServerRpc(json);

@@ -18,3 +18,5 @@ MonoBehaviour:
   - gameStart
   - turnStart
   - turnEnd
+  - playerDisconnected
+  - playerJoin

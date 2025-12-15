@@ -1,21 +1,24 @@
+using CardGame;
 using UnityEngine;
 
-namespace CardGame
+public static class LocalPlayerContext
 {
-    public static class LocalPlayerContext
+    public static string PlayerId { get; private set; }
+    public static PlayerSlot MySlot { get; private set; }
+
+    public static void Init()
     {
-        public static PlayerSlot Slot { get; private set; } = PlayerSlot.None;
-        public static ulong ClientId { get; private set; }
-
-        public static bool IsPlayer1 => Slot == PlayerSlot.Player1;
-        public static bool IsPlayer2 => Slot == PlayerSlot.Player2;
-
-        public static void Set(PlayerSlot slot, ulong clientId)
+        if (PlayerPrefs.HasKey("PLAYER_ID"))
+            PlayerId = PlayerPrefs.GetString("PLAYER_ID");
+        else
         {
-            Slot = slot;
-            ClientId = clientId;
-
-            Debug.Log($"[LocalPlayerContext] I am {slot} (ClientId: {clientId})");
+            PlayerId = System.Guid.NewGuid().ToString();
+            PlayerPrefs.SetString("PLAYER_ID", PlayerId);
         }
+    }
+
+    public static void SetSlot(PlayerSlot slot)
+    {
+        MySlot = slot;
     }
 }

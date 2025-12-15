@@ -45,6 +45,7 @@ namespace CardGame
 
         private void Connect(string address)
         {
+            LocalPlayerContext.Init();
             Debug.Log($"Trying to connect: {address}");
             UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
             transport.ConnectionData.Address = address;

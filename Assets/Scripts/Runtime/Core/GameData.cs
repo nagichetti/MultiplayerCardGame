@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace CardGame
 {
-    [CreateAssetMenu(fileName = "Game Data", menuName ="Game/Game Data")]
+    [CreateAssetMenu(fileName = "Game Data", menuName = "Game/Game Data")]
     public class GameData : ScriptableObject
     {
         public PlayerSlot PlayerId;
@@ -14,7 +14,7 @@ namespace CardGame
 
         public void ResetData()
         {
-            PlayerIds = new List<string>();
+            PlayerIds = new();
             PlayersJoined = 0;
         }
     }

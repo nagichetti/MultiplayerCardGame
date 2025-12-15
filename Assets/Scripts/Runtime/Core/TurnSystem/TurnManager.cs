@@ -30,7 +30,7 @@ namespace CardGame
             TurnStartMessage turnStartMsg = new TurnStartMessage
             {
                 action = nameof(Actions.turnStart),
-                playerId = LocalPlayerContext.Slot.ToString()
+                playerId = LocalPlayerContext.MySlot.ToString()
             };
 
             var msg = JsonUtility.ToJson(turnStartMsg);

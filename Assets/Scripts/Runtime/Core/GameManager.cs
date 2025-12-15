@@ -45,8 +45,8 @@ namespace CardGame
 
         private void GameEvents_OnPlayerJoined(PlayerSlot obj, ulong clienId)
         {
-            NetworkPlayer player = Instantiate(m_networkPrefab);
-            player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clienId);
+           /* NetworkPlayer player = Instantiate(m_networkPrefab);
+            player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clienId);*/
 
             GameData.PlayersJoined++;
             GameData.PlayerIds.Add(obj.ToString());
@@ -54,12 +54,12 @@ namespace CardGame
             if (GameData.PlayersJoined == GameData.PlayersNeeded)
                 StartMatch();
         }
-        private void GameEvents_OnPlayerQuit(string obj)
+        private void GameEvents_OnPlayerQuit(PlayerSlot slot, ulong clientId)
         {
             GameData.PlayersJoined--;
 
-            if (GameData.PlayerIds.Contains(obj))
-                GameData.PlayerIds.Remove(obj);
+            if (GameData.PlayerIds.Contains(nameof(slot)))
+                GameData.PlayerIds.Remove(nameof(slot));
         }
 
         private void StartMatch()
@@ -70,9 +70,9 @@ namespace CardGame
                 playerIds = GameData.PlayerIds.ToArray(),
                 totalTurns = GameData.Totalturns
             };
-            Debug.Log("Sending"+msg.action);
+            Debug.Log("Sending" + msg.action);
 
-            JsonNetworkClient.SendToClients(msg);
+            JsonNetworkClient.Send(msg);
         }
     }
 }
