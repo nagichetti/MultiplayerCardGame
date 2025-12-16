@@ -9,13 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bce6fd3265a173e4faaeba38c952f1db, type: 3}
-  m_Name: Game Data
+  m_Script: {fileID: 11500000, guid: 60e3a864b17a0c4408341fac0018b9a9, type: 3}
+  m_Name: Ability
   m_EditorClassIdentifier: 
-  PlayerId: 0
-  PlayersNeeded: 2
-  PlayerIds: []
-  Totalturns: 6
-  PlayersJoined: 0
-  turnDuration: 30
-  remainingTime: 0
+  enumName: Ability
+  values:
+  - None
+  - GainPoints
+  - StealPoints
+  - DoublePower
+  - DrawExtraCard
+  - DiscardOppRandomCard
+  - DestroyOppPlayedCards

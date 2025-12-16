@@ -16,6 +16,9 @@ namespace CardGame
         private int remainingCost;
         private Dictionary<PlayerSlot, int> playerScores = new();
 
+        public float turnDuration = 30f;
+        public float remainingTime = 0f;
+
         public int CurrentTurn { get => currentTurn; set { currentTurn = value; GameDataUpdated(); } }
         public int RemainingCost
         {
@@ -30,6 +33,7 @@ namespace CardGame
             PlayersJoined = 0;
             CurrentTurn = 0;
             RemainingCost = 0;
+            remainingTime = 0;
         }
 
         public event Action OnUpdateGameData;

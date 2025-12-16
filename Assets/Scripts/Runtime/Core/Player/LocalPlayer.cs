@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,7 +32,10 @@ namespace CardGame
         {
             GameEvents.EndTurnPressed();
         }
-
+        private void Update()
+        {
+            m_timer.text = "Time: " + GameData.remainingTime.ToString("0");
+        }
         private void OnDisable()
         {
             GameData.OnUpdateGameData -= GameData_OnUpdateGameData;
@@ -41,6 +43,7 @@ namespace CardGame
         }
         private void GameData_OnUpdateGameData()
         {
+            m_playerName.text = LocalPlayerContext.MySlot.ToString();
             m_remainingCostText.text = GameData.RemainingCost.ToString();
         }
     }
