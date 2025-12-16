@@ -28,12 +28,20 @@ namespace CardGame
                 case nameof(Actions.revealCard):
                     ValidateRevealCard(json);
                     break;
+                case nameof(Actions.scoreUpdate):
+                    ValidateUpdateScore(json);
+                    break;
                 default:
                     Debug.LogError($"Unknown or invalid server message: {msg.action}");
                     break;
             }
 
             Debug.Log($"Validating {msg.action}");
+        }
+
+        private static void ValidateUpdateScore(string json)
+        {
+            ServerSession.Broadcast(json);
         }
 
         private static void ValidateRevealCard(string json)

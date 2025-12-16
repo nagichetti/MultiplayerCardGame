@@ -18,6 +18,8 @@ namespace CardGame
         private TextMeshProUGUI m_playerName;
         [SerializeField]
         private TextMeshProUGUI m_timer;
+        [SerializeField]
+        private TextMeshProUGUI m_score;
 
         [SerializeField]
         Button m_button;
@@ -45,6 +47,8 @@ namespace CardGame
         {
             m_playerName.text = LocalPlayerContext.MySlot.ToString();
             m_remainingCostText.text = GameData.RemainingCost.ToString();
+            if(GameData.PlayerScores.TryGetValue(LocalPlayerContext.MySlot, out var score))
+                m_score.text = score.ToString();
         }
     }
 }

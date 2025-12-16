@@ -26,7 +26,7 @@ namespace CardGame
     [System.Serializable]
     public class AbilityData
     {
-        public string type;
+        public Ability type;
         public int value;
     }
 }

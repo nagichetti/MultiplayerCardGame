@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace CardGame
@@ -26,8 +27,17 @@ namespace CardGame
                 case nameof(Actions.revealCard):
                     HandleRevealCard(json);
                     break;
+                case nameof(Actions.scoreUpdate):
+                    HandleScoreUpdate(json);
+                    break;
             }
             Debug.Log($"Action: {msg.action}");
+        }
+
+        private static void HandleScoreUpdate(string json)
+        {
+            var msg = JsonUtility.FromJson<ScoreUpdateMessage>(json);
+            GameEvents.UpdateScore(msg);
         }
 
         private static void HandleRevealCard(string json)

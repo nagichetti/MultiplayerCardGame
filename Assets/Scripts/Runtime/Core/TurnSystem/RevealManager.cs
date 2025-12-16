@@ -16,6 +16,9 @@ namespace CardGame
         private Dictionary<string, List<CardData>> playedCards = new();
 
         public List<(string, CardData)> revealOrder = new();
+
+        bool scoreUpdated = true;
+        string lastUpdatedPlayer;
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
@@ -28,19 +31,49 @@ namespace CardGame
             GameEvents.OnPlayersReady += GameEvents_OnPlayersReady;
             GameEvents.OnTurnEnd += GameEvents_OnTurnEnd;
             GameEvents.OnRevealCard += GameEvents_OnRevealCard;
+            GameEvents.OnScoreUpdate += GameEvents_OnScoreUpdate;
         }
-
-        private void GameEvents_OnRevealCard(RevealCardMessage obj)
-        {
-            CardEvents.RevealCard(obj.playerId, revealOrder[obj.orderIndex].Item2);
-        }
-
         public override void OnNetworkDespawn()
         {
             base.OnNetworkDespawn();
             GameEvents.OnPlayersReady -= GameEvents_OnPlayersReady;
             GameEvents.OnTurnEnd -= GameEvents_OnTurnEnd;
+            GameEvents.OnRevealCard -= GameEvents_OnRevealCard;
+            GameEvents.OnScoreUpdate -= GameEvents_OnScoreUpdate;
         }
+
+        private void GameEvents_OnScoreUpdate(ScoreUpdateMessage obj)
+        {
+            Debug.Log("Adding score" + obj.playerId);
+            if (lastUpdatedPlayer == obj.playerId) return;
+            PlayerSlot player = (PlayerSlot)System.Enum.Parse(typeof(PlayerSlot), obj.playerId);
+            GameData.PlayerScores[player] += obj.score;
+            GameData.GameDataUpdated();
+            scoreUpdated = true;
+            lastUpdatedPlayer = obj.playerId;
+        }
+
+        private void GameEvents_OnRevealCard(RevealCardMessage obj)
+        {
+            lastUpdatedPlayer = string.Empty;
+
+            CardEvents.RevealCard(obj.playerId, revealOrder[obj.orderIndex].Item2);
+            UpdateScore(revealOrder[obj.orderIndex].Item2, obj.playerId);
+        }
+
+        private void UpdateScore(CardData data, string playerId)
+        {
+            switch (data.abilityData.type)
+            {
+                case Ability.GainPoints:
+                    SendScore(playerId, data.power + data.abilityData.value);
+                    break;
+                default:
+                    SendScore(playerId, data.power);
+                    break;
+            }
+        }
+
         private void GameEvents_OnTurnEnd(TurnEndMessage obj)
         {
             playedCards[obj.playerId] = obj.playedCards;
@@ -103,8 +136,8 @@ namespace CardGame
 
         public PlayerSlot DetermineInitiative()
         {
-            //if (GameData.PlayerScores[PlayerSlot.Player1] > GameData.PlayerScores[PlayerSlot.Player2]) return PlayerSlot.Player1;
-            //if (GameData.PlayerScores[PlayerSlot.Player2] > GameData.PlayerScores[PlayerSlot.Player1]) return PlayerSlot.Player2;
+            if (GameData.PlayerScores[PlayerSlot.Player1] > GameData.PlayerScores[PlayerSlot.Player2]) return PlayerSlot.Player1;
+            if (GameData.PlayerScores[PlayerSlot.Player2] > GameData.PlayerScores[PlayerSlot.Player1]) return PlayerSlot.Player2;
             return Random.value > 0.5f ? PlayerSlot.Player1 : PlayerSlot.Player2;
         }
 
@@ -114,7 +147,9 @@ namespace CardGame
             Debug.Log($"Reveal Order Count {revealOrder.Count}");
             while (revealOrder.Count > count)
             {
-                yield return new WaitForSeconds(2);
+                yield return new WaitUntil(() => scoreUpdated == true);
+                scoreUpdated = false;
+                yield return new WaitForSeconds(2f);
                 SendRevealCard(count, revealOrder[count].Item1);
                 count++;
             }
@@ -129,6 +164,17 @@ namespace CardGame
                 action = nameof(Actions.revealCard),
                 playerId = playerId,
                 orderIndex = index
+            };
+
+            JsonNetworkClient.SendToClients(msg);
+        }
+        public void SendScore(string playerId, int score)
+        {
+            ScoreUpdateMessage msg = new ScoreUpdateMessage
+            {
+                action = nameof(Actions.scoreUpdate),
+                playerId = playerId,
+                score = score
             };
 
             JsonNetworkClient.SendToClients(msg);

@@ -11,6 +11,7 @@ namespace CardGame
         public static event Action<TurnStartMessage> OnTurnStart;
         public static event Action<TurnEndMessage> OnTurnEnd;
         public static event Action<RevealCardMessage> OnRevealCard;
+        public static event Action<ScoreUpdateMessage> OnScoreUpdate;
         
         public static void PlayerJoined()
         {
@@ -39,6 +40,10 @@ namespace CardGame
         public static void RevealCard(RevealCardMessage msg)
         {
             OnRevealCard?.Invoke(msg);
+        }
+        public static void UpdateScore(ScoreUpdateMessage msg)
+        {
+            OnScoreUpdate?.Invoke(msg);
         }
     }
 }

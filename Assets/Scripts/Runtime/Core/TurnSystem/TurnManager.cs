@@ -17,6 +17,7 @@ namespace CardGame
 
         bool turnStared;
         bool timeRunning;
+        bool isGameEnded;
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
@@ -112,7 +113,7 @@ namespace CardGame
         }
         public void EndCurrentPlayerTurn()
         {
-            if (currentplayerTurn == LocalPlayerContext.MySlot)
+            if (currentplayerTurn == LocalPlayerContext.MySlot && !isGameEnded)
                 SendEndTurnMsg(currentplayerTurn);
         }
         private void SendStartTurnMsg(PlayerSlot playerSlot)
@@ -150,7 +151,11 @@ namespace CardGame
         public void StartNextTurn(PlayerSlot playerSlot)
         {
             GameData.CurrentTurn++;
-            if (gameTurnEndedCount > GameData.Totalturns) return;
+            if (gameTurnEndedCount > GameData.Totalturns - 1)
+            {
+                isGameEnded = true;
+                return;
+            }
             GameData.RemainingCost += GameData.CurrentTurn;
             playerTurnEndedCount = 0;
             CardManager.Instance.GiveNextCards(1);
