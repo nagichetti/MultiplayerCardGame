@@ -46,6 +46,8 @@ namespace CardGame
                 GameData.PlayerIds = obj.playerIds.ToList();
 
             GameData.Totalturns = obj.totalTurns;
+            GameData.CurrentTurn ++;
+            GameData.RemainingCost = GameData.CurrentTurn;
         }
 
         private void GameEvents_OnPlayerJoined()

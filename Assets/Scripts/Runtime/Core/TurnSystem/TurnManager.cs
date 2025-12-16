@@ -42,8 +42,6 @@ namespace CardGame
         private void GameEvents_OnGameStart(GameStartMessage obj)
         {
             SendStartTurnMsg(PickrandomPlayer());
-            GameData.CurrentTurn++;
-            GameData.RemainingCost = GameData.CurrentTurn;
         }
         private PlayerSlot PickrandomPlayer()
         {
@@ -109,7 +107,7 @@ namespace CardGame
             {
                 GameData.remainingTime = 0;
                 timeRunning = false;
-                // GameEvents.EndTurnPressed();
+                GameEvents.EndTurnPressed();
             }
         }
         public void EndCurrentPlayerTurn()
