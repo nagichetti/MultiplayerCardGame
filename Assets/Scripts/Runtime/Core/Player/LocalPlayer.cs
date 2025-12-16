@@ -20,7 +20,8 @@ namespace CardGame
         private TextMeshProUGUI m_timer;
         [SerializeField]
         private TextMeshProUGUI m_score;
-
+        [SerializeField]
+        private TextMeshProUGUI turnText;
         [SerializeField]
         Button m_button;
         private void OnEnable()
@@ -46,9 +47,16 @@ namespace CardGame
         private void GameData_OnUpdateGameData()
         {
             m_playerName.text = LocalPlayerContext.MySlot.ToString();
-            m_remainingCostText.text = GameData.RemainingCost.ToString();
-            if(GameData.PlayerScores.TryGetValue(LocalPlayerContext.MySlot, out var score))
-                m_score.text = score.ToString();
+
+            if(GameData.CurrentTurn>GameData.Totalturns)
+                turnText.gameObject.SetActive(false);
+
+            turnText.text = $"Turn {GameData.CurrentTurn}/{GameData.Totalturns}";
+
+            m_remainingCostText.text = "Energy: " + GameData.RemainingCost.ToString();
+
+            if (GameData.PlayerScores.TryGetValue(LocalPlayerContext.MySlot, out var score))
+                m_score.text = "Score: " + score.ToString();
         }
     }
 }

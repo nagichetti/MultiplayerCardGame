@@ -130,7 +130,7 @@ namespace CardGame
             {
                 cardPrefab.CardData = ShuffledCards[i];
                 CardEvents.SpawnCardToHand(cardPrefab);
-                currentCardIndex = i+1;
+                currentCardIndex = i + 1;
             }
         }
         public void GiveNextCards(int cardCount)
@@ -141,6 +141,12 @@ namespace CardGame
                 CardEvents.SpawnCardToHand(cardPrefab);
                 currentCardIndex++;
             }
+        }
+        public void TakeOutRandomCard()
+        {
+            var randomCard = Random.Range(0, InHandCards.Count - 1);
+            Destroy(InHandCards[randomCard].transform.parent.gameObject);
+            InHandCards.RemoveAt(randomCard);
         }
         public void CreateShuffledDeck()
         {
@@ -159,6 +165,8 @@ namespace CardGame
             }
 
             Shuffle(ShuffledCards);
+
+            EnsureStartingCostOneCards(2);
         }
         void Shuffle<T>(List<T> list)
         {
@@ -167,6 +175,23 @@ namespace CardGame
                 int j = Random.Range(0, i + 1);
                 (list[i], list[j]) = (list[j], list[i]);
             }
+        }
+        private void EnsureStartingCostOneCards(int count)
+        {
+            List<CardData> costOneCards = ShuffledCards.FindAll(c => c.cost == 1);
+
+            if (costOneCards.Count < count)
+            {
+                Debug.LogWarning("Not enough cost-1 cards in deck");
+                return;
+            }
+
+            var selected = costOneCards.GetRange(0, count);
+
+            foreach (var card in selected)
+                ShuffledCards.Remove(card);
+
+            ShuffledCards.InsertRange(0, selected);
         }
 
         public void LockInHandCards()

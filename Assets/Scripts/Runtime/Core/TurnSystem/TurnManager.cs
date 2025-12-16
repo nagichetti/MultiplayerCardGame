@@ -1,3 +1,4 @@
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -18,6 +19,8 @@ namespace CardGame
         bool turnStared;
         bool timeRunning;
         bool isGameEnded;
+
+
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
@@ -51,6 +54,7 @@ namespace CardGame
         private void GameEvents_OnTurnStart(TurnStartMessage obj)
         {
             if (RevealManager.Instance.IsRevealPhase) return;
+           
             currentplayerTurn = (PlayerSlot)System.Enum.Parse(typeof(PlayerSlot), obj.playerId);
 
             Debug.Log($"Unlocking {obj.playerId} Cards");
@@ -75,6 +79,7 @@ namespace CardGame
             if (playerTurnEndedCount == 2)
             {
                 SendPlayersReady();
+                StopTimer();
                 return;
             }
             PlayerSlot nextPlayer = currentplayerTurn == PlayerSlot.Player1 ? PlayerSlot.Player2 : PlayerSlot.Player1;
@@ -154,6 +159,8 @@ namespace CardGame
             if (gameTurnEndedCount > GameData.Totalturns - 1)
             {
                 isGameEnded = true;
+                GameManager.Instance.EndMatch();
+                StopTimer();
                 return;
             }
             GameData.RemainingCost += GameData.CurrentTurn;

@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 
@@ -25,6 +24,8 @@ namespace CardGame
         private TextMeshProUGUI powerText;
         [SerializeField]
         private TextMeshProUGUI ability;
+        [SerializeField]
+        private TextMeshProUGUI cardName;
 
         private bool isPlaced;
         public CardVisual CardVisual => m_cardVisual;
@@ -34,7 +35,7 @@ namespace CardGame
             get => isPlaced; set
             {
                 isPlaced = value;
-                HandlePlacement();   
+                HandlePlacement();
             }
         }
         private void Awake()
@@ -60,9 +61,10 @@ namespace CardGame
 
         public void Init()
         {
-            costText.text = "Cost: " + CardData.cost.ToString();
-            powerText.text = "Power: " + CardData.power.ToString();
-            ability.text = "Ability: " + CardData.abilityData.type;
+            costText.text = CardData.cost.ToString();
+            powerText.text = CardData.power.ToString();
+            ability.text = CardData.abilityData.type.ToString();
+            cardName.text = CardData.name;
             FaceUp();
         }
         public void Fold()

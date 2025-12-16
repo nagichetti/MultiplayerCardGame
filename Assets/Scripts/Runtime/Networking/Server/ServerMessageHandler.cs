@@ -31,12 +31,20 @@ namespace CardGame
                 case nameof(Actions.scoreUpdate):
                     ValidateUpdateScore(json);
                     break;
+                case nameof(Actions.gameEnd):
+                    ValidateGameEnd(json);
+                    break;
                 default:
                     Debug.LogError($"Unknown or invalid server message: {msg.action}");
                     break;
             }
 
             Debug.Log($"Validating {msg.action}");
+        }
+
+        private static void ValidateGameEnd(string json)
+        {
+            ServerSession.Broadcast(json);
         }
 
         private static void ValidateUpdateScore(string json)

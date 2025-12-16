@@ -5,8 +5,8 @@ namespace CardGame
     [System.Serializable]
     public class CardData
     {
-        public int id;
         public string name;
+        public int id;
         public int cost;
         public int power;
         public AbilityData abilityData;

@@ -5,5 +5,6 @@ public enum Actions
     turnStart,
     turnEnd,
     revealCard,
-    scoreUpdate
+    scoreUpdate,
+    gameEnd
 }

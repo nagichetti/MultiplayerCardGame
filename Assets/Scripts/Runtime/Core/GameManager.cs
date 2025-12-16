@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Linq;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -15,17 +16,29 @@ namespace CardGame
         private GameObject m_mainMenu;
         [SerializeField]
         private GameObject m_game;
+        [SerializeField]
+        private TextMeshProUGUI finalMsg;
 
         private bool GameStarted;
 
         private NetworkPlayer networkPlayer;
 
-        public bool spam;
         public override void Awake()
         {
             base.Awake();
             GameEvents.OnPlayerJoined += GameEvents_OnPlayerJoined;
             GameEvents.OnGameStart += GameEvents_OnGameStart;
+            GameEvents.OnGameEnd += GameEvents_OnGameEnd;
+        }
+
+        private void GameEvents_OnGameEnd(GameEndMessage obj)
+        {
+            if (obj.wonPlayerId == PlayerSlot.None.ToString())
+                finalMsg.text = "Draw";
+            else
+                finalMsg.text = LocalPlayerContext.MySlot.ToString() == obj.wonPlayerId ? "Victory" : "Defeat";
+
+            finalMsg.gameObject.SetActive(true);
         }
 
         private void OnDestroy()
@@ -33,6 +46,7 @@ namespace CardGame
             GameData.ResetData();
             GameEvents.OnPlayerJoined -= GameEvents_OnPlayerJoined;
             GameEvents.OnGameStart -= GameEvents_OnGameStart;
+            GameEvents.OnGameEnd -= GameEvents_OnGameEnd;
         }
 
         private void GameEvents_OnGameStart(GameStartMessage obj)
@@ -46,7 +60,7 @@ namespace CardGame
                 GameData.PlayerIds = obj.playerIds.ToList();
 
             GameData.Totalturns = obj.totalTurns;
-            GameData.CurrentTurn ++;
+            GameData.CurrentTurn++;
             GameData.RemainingCost = GameData.CurrentTurn;
             GameData.PlayerScores.Add(PlayerSlot.Player1, 0);
             GameData.PlayerScores.Add(PlayerSlot.Player2, 0);
@@ -69,16 +83,8 @@ namespace CardGame
         IEnumerator StartGameWithDelay()
         {
             yield return new WaitForSeconds(2f);
-                ServerSession.StartGame();
+            ServerSession.StartGame();
 
-        }
-        private void OnValidate()
-        {
-            if (spam)
-            {
-                StartMatch();
-                spam = false;
-            }
         }
         private void StartMatch()
         {
@@ -89,6 +95,21 @@ namespace CardGame
                 totalTurns = GameData.Totalturns
             };
             Debug.Log("Sending" + msg.action);
+
+            JsonNetworkClient.SendToClients(msg);
+        }
+        public void EndMatch()
+        {
+            PlayerSlot winner = GameData.PlayerScores[PlayerSlot.Player1] > GameData.PlayerScores[PlayerSlot.Player2] ? PlayerSlot.Player1 : PlayerSlot.Player2;
+
+            if (GameData.PlayerScores[PlayerSlot.Player1] == GameData.PlayerScores[PlayerSlot.Player2])
+                winner = PlayerSlot.None;
+
+            var msg = new GameEndMessage
+            {
+                action = nameof(Actions.gameEnd),
+                wonPlayerId = winner.ToString(),
+            };
 
             JsonNetworkClient.SendToClients(msg);
         }

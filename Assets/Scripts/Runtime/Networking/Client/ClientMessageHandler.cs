@@ -30,8 +30,17 @@ namespace CardGame
                 case nameof(Actions.scoreUpdate):
                     HandleScoreUpdate(json);
                     break;
+                case nameof(Actions.gameEnd):
+                    HandleGameEnd(json);
+                    break;
             }
             Debug.Log($"Action: {msg.action}");
+        }
+
+        private static void HandleGameEnd(string json)
+        {
+            var msg = JsonUtility.FromJson<GameEndMessage>(json);
+            GameEvents.GameEnd(msg);
         }
 
         private static void HandleScoreUpdate(string json)

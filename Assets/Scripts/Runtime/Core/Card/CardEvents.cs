@@ -11,7 +11,7 @@ namespace CardGame
         public static event Action<Card> OnRemoveCardFromBorad;
         public static event Action<string, CardData> OnRevealCard;
         public static event Action OnRevealEnd;
-
+        public static event Action<PlayerSlot> OnClearPlayedCards;
         public static void SpawnCardToHand(Card card)
         {
             OnSpawnCardToHand?.Invoke(card);
@@ -43,6 +43,11 @@ namespace CardGame
         public static void RevealEnd()
         {
             OnRevealEnd?.Invoke();
+        }
+
+        public static void ClearPlayedCards(PlayerSlot oppPlayer)
+        {
+            OnClearPlayedCards?.Invoke(oppPlayer);
         }
     }
 }

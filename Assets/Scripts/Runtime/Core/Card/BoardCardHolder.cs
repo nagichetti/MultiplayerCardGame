@@ -20,6 +20,7 @@ namespace CardGame
             CardEvents.OnRemoveCardFromBorad += CardEvents_OnRemoveCardFromBorad;
             CardEvents.OnRevealCard += CardEvents_OnRevealCard;
             CardEvents.OnRevealEnd += RemoveCards;
+            CardEvents.OnClearPlayedCards += CardEvents_OnClearPlayedCards;
         }
 
         private void OnDestroy()
@@ -28,6 +29,12 @@ namespace CardGame
             CardEvents.OnRemoveCardFromBorad -= CardEvents_OnRemoveCardFromBorad;
             CardEvents.OnRevealCard -= CardEvents_OnRevealCard;
             CardEvents.OnRevealEnd -= RemoveCards;
+            CardEvents.OnClearPlayedCards -= CardEvents_OnClearPlayedCards;
+        }
+        private void CardEvents_OnClearPlayedCards(PlayerSlot oppPlayer)
+        {
+            if (LocalPlayerContext.MySlot == oppPlayer)
+                RemoveCards();
         }
         private void CardEvents_OnRevealCard(string playerId, CardData obj)
         {

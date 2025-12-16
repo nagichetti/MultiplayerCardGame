@@ -15,14 +15,21 @@ namespace CardGame
             GameEvents.OnTurnEnd += GameEvents_OnTurnEnd;
             CardEvents.OnRevealCard += CardEvents_OnRevealCard;
             CardEvents.OnRevealEnd += RemoveCards;
+            CardEvents.OnClearPlayedCards += CardEvents_OnClearPlayedCards;
         }
-
         private void OnDestroy()
         {
             GameEvents.OnTurnEnd -= GameEvents_OnTurnEnd;
             CardEvents.OnRevealCard -= CardEvents_OnRevealCard;
             CardEvents.OnRevealEnd -= RemoveCards;
+            CardEvents.OnClearPlayedCards -= CardEvents_OnClearPlayedCards;
         }
+        private void CardEvents_OnClearPlayedCards(PlayerSlot obj)
+        {
+            if (LocalPlayerContext.MySlot == obj) return;
+            RemoveCards();
+        }
+
         private void CardEvents_OnRevealCard(string playerId, CardData obj)
         {
             if (LocalPlayerContext.MySlot.ToString() == playerId) return;

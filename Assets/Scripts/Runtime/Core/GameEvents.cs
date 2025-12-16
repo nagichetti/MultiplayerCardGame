@@ -8,6 +8,7 @@ namespace CardGame
         public static event Action OnEndTurnPressed;
         public static event Action OnPlayersReady;
         public static event Action<GameStartMessage> OnGameStart;
+        public static event Action<GameEndMessage> OnGameEnd;
         public static event Action<TurnStartMessage> OnTurnStart;
         public static event Action<TurnEndMessage> OnTurnEnd;
         public static event Action<RevealCardMessage> OnRevealCard;
@@ -28,6 +29,10 @@ namespace CardGame
         public static void GameStart(GameStartMessage msg)
         {
             OnGameStart?.Invoke(msg);
+        }
+        public static void GameEnd(GameEndMessage msg)
+        {
+            OnGameEnd?.Invoke(msg);
         }
         public static void TurnStart(TurnStartMessage msg)
         {
